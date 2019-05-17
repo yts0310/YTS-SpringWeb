@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.yts.article.Article;
 import com.yts.chap11.Member;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +18,15 @@ public class ArticleController {
 	@Autowired
 	ArticleDao articleDao;
 
-	
+	/**
+	 * 글 목록
+	 */
 	@GetMapping("/article/list")
 	public void articleList(
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			Model model) {
 
+		// 페이지당 행의 수와 페이지의 시작점
 		final int COUNT = 100;
 		int offset = (page - 1) * COUNT;
 
@@ -35,7 +36,9 @@ public class ArticleController {
 		model.addAttribute("articleList", articleList);
 	}
 
-	
+	/**
+	 * 글 보기
+	 */
 	@GetMapping("/article/view")
 	public void articleView(@RequestParam("articleId") String articleId,
 			Model model) {
@@ -43,24 +46,31 @@ public class ArticleController {
 		model.addAttribute("article", article);
 	}
 
+	/**
+	 * 글 등록 화면
+	 */
 	@GetMapping("/article/addForm")
 	public String articleAddForm(HttpSession session) {
 		Object memberObj = session.getAttribute("MEMBER");
-		if(memberObj == null)
+		if (memberObj == null)
 			return "redirect:/app/loginForm";
+
 		return "article/addForm";
 	}
 
+	/**
+	 * 글 등록
+	 */
 	@PostMapping("/article/add")
 	public String articleAdd(Article article, HttpSession session) {
 		Object memberObj = session.getAttribute("MEMBER");
-		if(memberObj == null)
+		if (memberObj == null)
 			return "redirect:/app/loginForm";
-		Member member = (Member)memberObj;
+
+		Member member = (Member) memberObj;
 		article.setUserId(member.getMemberId());
 		article.setName(member.getName());
 		articleDao.addArticle(article);
 		return "redirect:/app/article/list";
-}
-
+	}
 }
