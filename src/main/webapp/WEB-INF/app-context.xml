@@ -17,6 +17,16 @@
 	<mvc:annotation-driven />
 	<context:component-scan base-package="com.yts" />
 
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/member/**" /> <!-- 별하나 = 해당url 별2개 = 하위전부 -->
+			<mvc:mapping path="/article/add*" />
+			<bean class="com.yts.chap13.AuthCheckInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!-- 인터셉터에서 로그인이 됬는지 여부 다 따져 줌-->
+	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
